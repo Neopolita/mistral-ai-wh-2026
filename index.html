@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thoth | Mistral AI Hackathon 2026</title>
+  <title>Thoth &amp; mlx-D2L | Mistral AI Hackathon 2026</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -338,17 +338,17 @@
   <header class="hero">
     <div class="container">
       <div class="badge">Mistral AI Worldwide Hackathon 2026</div>
-      <h1>Thoth</h1>
+      <h1>Thoth <span>&amp;</span> mlx-D2L</h1>
       <p class="subtitle">
         An AI agent that uses Sakana.ai <a href="https://pub.sakana.ai/doc-to-lora/" target="_blank" style="color:var(--accent);text-decoration:none;">Doc-to-LoRA</a> to embed document knowledge into model weights
-        instead of consuming context. We also trained a new Doc-to-LoRA hypernetwork
+        instead of consuming context. I also trained a new Doc-to-LoRA hypernetwork
         for Ministral-3-3B-Instruct-2512 from scratch and reimplemented the inference pipeline in MLX
         for native Apple Silicon support.
       </p>
       <div class="hero-links">
-        <a href="https://github.com/Neopolita/doc-to-lora" class="btn-primary" target="_blank">Training Code</a>
-        <a href="https://github.com/Neopolita/thoth" class="btn-outline" target="_blank">Thoth Agent</a>
-        <a href="https://huggingface.co/neopolita/doc-to-lora-ministral-3b-2512" class="btn-outline" target="_blank">Model</a>
+        <a href="https://github.com/Neopolita/thoth" class="btn-primary" target="_blank">Thoth Agent</a>
+        <a href="https://github.com/Neopolita/doc-to-lora" class="btn-outline" target="_blank">Training Code</a>
+        <a href="https://huggingface.co/neopolita/doc-to-lora-ministral-3b-2512" class="btn-outline" target="_blank">Hypernetwork</a>
         <a href="https://wandb.ai/neopolita/doc-to-lora/reports/Doc-to-LoRA-Ministral-3-3B-Instruct-2512-Hypernetwork--VmlldzoxNjA3MTU0MQ" class="btn-outline" target="_blank">W&amp;B Report</a>
       </div>
     </div>
@@ -360,7 +360,7 @@
   <section>
     <div class="container">
       <div class="section-label">Motivation</div>
-      <h2>The Problem &amp; Our Solution</h2>
+      <h2>The Problem &amp; The Solution</h2>
       <div class="two-col">
         <div class="card">
           <h3><span class="icon icon-red">!</span> The Problem</h3>
@@ -372,12 +372,12 @@
           </p>
         </div>
         <div class="card">
-          <h3><span class="icon icon-green">&#10003;</span> Our Solution</h3>
+          <h3><span class="icon icon-green">&#10003;</span> My Solution</h3>
           <p>
-            Three contributions: we ported Sakana AI's Doc-to-LoRA framework to
+            Three contributions: I ported Sakana AI's Doc-to-LoRA framework to
             <strong>Mistral's Ministral-3-3B-Instruct-2512</strong>, training a new hypernetwork from scratch with
-            limited hackathon resources. We reimplemented the full inference pipeline for
-            <strong>Apple Silicon (MLX)</strong>, shipped as a standalone library. And we built
+            limited hackathon resources. I reimplemented the full inference pipeline for
+            <strong>Apple Silicon (MLX)</strong>, shipped as a standalone library. And I built
             <strong>Thoth</strong>, an agentic system that uses Doc-to-LoRA as a memory
             layer&mdash;powered by Mistral-7B and Sakana AI's pretrained hypernetwork.
           </p>
@@ -393,7 +393,7 @@
     <div class="container">
       <div class="section-label">How It Works</div>
       <h2>Doc-to-LoRA Pipeline</h2>
-      <p>A four-stage pipeline transforms raw documents into rank-8 LoRA adapters targeting the model's MLP layers. The same architecture applies to both our Ministral-3-3B-Instruct-2512 training and the Mistral-7B hypernetwork used in Thoth.</p>
+      <p>A four-stage pipeline transforms raw documents into rank-8 LoRA adapters targeting the model's MLP layers. The same architecture applies to both my Ministral-3-3B-Instruct-2512 training and the Mistral-7B hypernetwork used in Thoth.</p>
       <div class="pipeline">
         <div class="pipeline-step">
           <div class="step-num">1</div>
@@ -497,7 +497,7 @@
       <div class="section-label">Engineering</div>
       <h2>MLX Doc-to-LoRA Library</h2>
       <p>
-        As part of the hackathon, we reimplemented the entire Doc-to-LoRA inference pipeline
+        As part of the hackathon, I reimplemented the entire Doc-to-LoRA inference pipeline
         for Apple Silicon, shipped as a standalone library inside Thoth at
         <a href="https://github.com/Neopolita/thoth/tree/main/thoth/d2l" target="_blank" style="color:var(--accent);text-decoration:none;">thoth/d2l</a>.
         This enables the full hypernetwork pipeline to run natively on Mac without CUDA,
@@ -593,7 +593,7 @@
       <div class="section-label">Training</div>
       <h2>Ministral-3-3B-Instruct-2512 Hypernetwork Training</h2>
       <p>
-        Separately from Thoth, we ported the Doc-to-LoRA framework to Ministral-3-3B-Instruct-2512, training a
+        Separately from Thoth, I ported the Doc-to-LoRA framework to Ministral-3-3B-Instruct-2512, training a
         new hypernetwork from scratch.
         The training uses context distillation: a teacher model reads documents and answers questions,
         then the student (hypernetwork-generated LoRA, no document in context) tries to match the
@@ -622,7 +622,7 @@
       <div class="two-col" style="margin-top:24px;">
         <div class="card">
           <h3>Training Data</h3>
-          <p>Self-generated QA pairs via Ministral-3B (vLLM) on four datasets:
+          <p>Self-generated QA pairs via Ministral-3-3B-Instruct-2512 (vLLM) on four datasets:
             <strong>SQuAD</strong> (Wikipedia QA),
             <strong>DROP</strong> (discrete reasoning),
             <strong>ROPES</strong> (science cause-effect),
@@ -651,7 +651,7 @@
       <div class="two-col" style="margin-top:28px;">
         <div class="card">
           <h3><span class="icon icon-red">&#9881;</span> Multimodal Packaging</h3>
-          <p>Ministral-3B ships as a multimodal Pixtral variant. We extracted the text-only MistralForCausalLM component for use as the encoder.</p>
+          <p>Ministral-3-3B-Instruct-2512 ships as a multimodal Pixtral variant. I extracted the text-only MistralForCausalLM component for use as the encoder.</p>
         </div>
         <div class="card">
           <h3><span class="icon icon-blue">&#9889;</span> FP8 Quantization Bug</h3>
