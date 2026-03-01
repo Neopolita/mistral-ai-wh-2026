@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doc-to-LoRA &amp; Thoth | Mistral AI Hackathon 2026</title>
+  <title>Thoth | Mistral AI Hackathon 2026</title>
   <style>
     :root {
       --bg: #0a0a0f;
@@ -200,10 +200,10 @@
       text-align: left;
       overflow-x: auto;
     }
-    .arch-diagram pre b { color: var(--accent); font-weight: 600; }                     
-    .arch-diagram pre em { color: var(--blue); font-style: normal; }                           
-    .arch-diagram pre i { color: var(--green); font-style: normal; }                         
-    .arch-diagram pre u { color: var(--purple); text-decoration: none; } 
+    .arch-diagram pre .c-o { color: var(--accent); }
+    .arch-diagram pre .c-b { color: var(--blue); }
+    .arch-diagram pre .c-g { color: var(--green); }
+    .arch-diagram pre .c-p { color: var(--purple); } 
 
     /* Comparison table */
     .table-wrap {
@@ -338,18 +338,18 @@
   <header class="hero">
     <div class="container">
       <div class="badge">Mistral AI Worldwide Hackathon 2026</div>
-      <h1>Doc-to-LoRA <span>&amp;</span> Thoth</h1>
+      <h1>Thoth</h1>
       <p class="subtitle">
-        A hypernetwork that converts documents into LoRA adapters in under a second,
-        embedding knowledge directly into model weights instead of consuming context.
-        Paired with Thoth, an agentic system that uses this as a memory layer for
-        context-free document reasoning.
+        An AI agent that uses Sakana.ai <a href="https://pub.sakana.ai/doc-to-lora/" target="_blank" style="color:var(--accent);text-decoration:none;">Doc-to-LoRA</a> to embed document knowledge into model weights
+        instead of consuming context. We also trained a new Doc-to-LoRA hypernetwork
+        for Ministral-3-3B-Instruct-2512 from scratch and reimplemented the inference pipeline in MLX
+        for native Apple Silicon support.
       </p>
       <div class="hero-links">
         <a href="https://github.com/Neopolita/doc-to-lora" class="btn-primary" target="_blank">Training Code</a>
         <a href="https://github.com/Neopolita/thoth" class="btn-outline" target="_blank">Thoth Agent</a>
         <a href="https://huggingface.co/neopolita/doc-to-lora-ministral-3b-2512" class="btn-outline" target="_blank">Model</a>
-        <a href="https://wandb.ai/neopolita/doc-to-lora/reports/Doc-to-LoRA-Ministral-3-3B-Hypernetwork--VmlldzoxNjA3MTU0MQ" class="btn-outline" target="_blank">W&amp;B Report</a>
+        <a href="https://wandb.ai/neopolita/doc-to-lora/reports/Doc-to-LoRA-Ministral-3-3B-Instruct-2512-Hypernetwork--VmlldzoxNjA3MTU0MQ" class="btn-outline" target="_blank">W&amp;B Report</a>
       </div>
     </div>
   </header>
@@ -365,19 +365,21 @@
         <div class="card">
           <h3><span class="icon icon-red">!</span> The Problem</h3>
           <p>
-            Knowledge-augmented LLMs today rely on stuffing documents into prompts (RAG),
-            consuming precious context window tokens. Each query re-retrieves the same chunks,
-            leaving less room for reasoning and multi-turn dialogue. For repeatedly-queried
-            documents, this overhead compounds.
+            LLMs face constant context size pressure. As conversations grow, agentic systems
+            must compact or summarize prior context to stay within token limits, losing information
+            along the way. Knowledge-augmented approaches like RAG make this worse by stuffing
+            retrieved documents into prompts, consuming even more of the limited context window.
           </p>
         </div>
         <div class="card">
           <h3><span class="icon icon-green">&#10003;</span> Our Solution</h3>
           <p>
-            Two contributions: first, we ported Sakana AI's Doc-to-LoRA framework to
-            <strong>Mistral's Ministral-3-3B</strong>, training a new hypernetwork from scratch. Second, we built <strong>Thoth</strong>, an agentic system
-            that uses Doc-to-LoRA as a memory layer&mdash;powered by <strong>Mistral-7B</strong> and
-            Sakana AI's pretrained hypernetwork for production reliability.
+            Three contributions: we ported Sakana AI's Doc-to-LoRA framework to
+            <strong>Mistral's Ministral-3-3B-Instruct-2512</strong>, training a new hypernetwork from scratch with
+            limited hackathon resources. We reimplemented the full inference pipeline for
+            <strong>Apple Silicon (MLX)</strong>, shipped as a standalone library. And we built
+            <strong>Thoth</strong>, an agentic system that uses Doc-to-LoRA as a memory
+            layer&mdash;powered by Mistral-7B and Sakana AI's pretrained hypernetwork.
           </p>
         </div>
       </div>
@@ -391,7 +393,7 @@
     <div class="container">
       <div class="section-label">How It Works</div>
       <h2>Doc-to-LoRA Pipeline</h2>
-      <p>A four-stage pipeline transforms raw documents into rank-8 LoRA adapters targeting the model's MLP layers. The same architecture applies to both our Ministral-3-3B training and the Mistral-7B hypernetwork used in Thoth.</p>
+      <p>A four-stage pipeline transforms raw documents into rank-8 LoRA adapters targeting the model's MLP layers. The same architecture applies to both our Ministral-3-3B-Instruct-2512 training and the Mistral-7B hypernetwork used in Thoth.</p>
       <div class="pipeline">
         <div class="pipeline-step">
           <div class="step-num">1</div>
@@ -417,11 +419,11 @@
 
       <div class="arch-diagram">
 <pre>
-                          <b>Doc-to-LoRA Architecture</b>
+                          <span class="c-o">Doc-to-LoRA Architecture</span>
 
   +----------+    +------------------+    +--------------+    +-----------+
-  | <em>Tokenize</em> | -> |    <em>Base Model</em>    | -> |   <u>Perceiver</u>  | -> | <i>HyperLoRA</i> |
-  |          |    | <em>(frozen encoder)</em> |    |   <u>Resampler</u>  |    |           |
+  | <span class="c-b">Tokenize</span> | -> |    <span class="c-b">Base Model</span>    | -> |   <span class="c-p">Perceiver</span>  | -> | <span class="c-g">HyperLoRA</span> |
+  |          |    | <span class="c-b">(frozen encoder)</span> |    |   <span class="c-p">Resampler</span>  |    |           |
   +----------+    +------------------+    +--------------+    +-----------+
 
   Document in, LoRA adapter out. Knowledge lives in weights, context stays free.
@@ -465,24 +467,72 @@
 
       <div class="arch-diagram" style="margin-top:24px;">
 <pre>
-                        <b>Thoth Agent Architecture</b>
+                        <span class="c-o">Thoth Agent Architecture</span>
 
   User Query
       |
       v
   +-----------------------+      +---------------------+
-  |  <b>Mistral Large API</b>    | ---> |  <em>DuckDuckGo Search</em>  |
-  |  (ReAct reasoning)    |      |  <em>Web Fetch</em>          |
+  |  <span class="c-o">Mistral Large API</span>    | ---> |  <span class="c-b">DuckDuckGo Search</span>  |
+  |  (ReAct reasoning)    |      |  <span class="c-b">Web Fetch</span>          |
   |  DSPy orchestration   |      +---------------------+
   +-----------------------+
               |
               v  add_memory / query_memory
   +-----------------------+      +---------------------+
-  |  <u>Doc-to-LoRA</u>          | ---> |  <i>MLX-LM Server</i>      |
-  |  <u>Sakana AI pretrained</u> |      |  <i>Mistral-7B + LoRAs</i> |
-  |  <u>hypernetwork</u>         |      |  <i>(Apple Silicon)</i>    |
+  |  <span class="c-p">Doc-to-LoRA</span>          | ---> |  <span class="c-g">MLX-LM Server</span>      |
+  |  <span class="c-p">Sakana AI pretrained</span> |      |  <span class="c-g">Mistral-7B + LoRAs</span> |
+  |  <span class="c-p">hypernetwork</span>         |      |  <span class="c-g">(Apple Silicon)</span>    |
   +-----------------------+      +---------------------+
 </pre>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MLX Doc-to-LoRA Library -->
+  <section>
+    <div class="container">
+      <div class="section-label">Engineering</div>
+      <h2>MLX Doc-to-LoRA Library</h2>
+      <p>
+        As part of the hackathon, we reimplemented the entire Doc-to-LoRA inference pipeline
+        for Apple Silicon, shipped as a standalone library inside Thoth at
+        <a href="https://github.com/Neopolita/thoth/tree/main/thoth/d2l" target="_blank" style="color:var(--accent);text-decoration:none;">thoth/d2l</a>.
+        This enables the full hypernetwork pipeline to run natively on Mac without CUDA,
+        powering Thoth's local-first architecture.
+      </p>
+      <div class="two-col" style="margin-top:28px;">
+        <div class="card">
+          <h3>Perceiver &amp; HyperLoRA</h3>
+          <p>
+            Full reimplementation of the Perceiver Resampler (9 encoder blocks, GQA attention,
+            GatedMLP) and the HyperLoRA network that generates rank-8 LoRA A/B weight matrices
+            for all 32 transformer layers.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Context Encoder</h3>
+          <p>
+            Extracts per-layer hidden states from a frozen Mistral-7B, tokenizing documents
+            with the model's chat template and collecting activations across all 32 layers.
+          </p>
+        </div>
+        <div class="card">
+          <h3>MLX-LM Adapter Export</h3>
+          <p>
+            Converts generated LoRA weights to mlx-lm compatible format&mdash;SafeTensors binaries
+            with JSON config&mdash;ready to be hot-loaded into the running MLX-LM server.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Checkpoint Loading</h3>
+          <p>
+            Downloads and loads Sakana AI's pretrained hypernetwork from Hugging Face,
+            handling weight format conversion and non-strict state dict loading.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -541,10 +591,10 @@
   <section>
     <div class="container">
       <div class="section-label">Training</div>
-      <h2>Ministral-3-3B Hypernetwork Training</h2>
+      <h2>Ministral-3-3B-Instruct-2512 Hypernetwork Training</h2>
       <p>
-        Separately from Thoth, we ported the Doc-to-LoRA framework to Ministral-3-3B, training a
-        new hypernetwork from scratch with limited hackathon resources.
+        Separately from Thoth, we ported the Doc-to-LoRA framework to Ministral-3-3B-Instruct-2512, training a
+        new hypernetwork from scratch.
         The training uses context distillation: a teacher model reads documents and answers questions,
         then the student (hypernetwork-generated LoRA, no document in context) tries to match the
         teacher's output distribution via KL divergence loss. While Thoth uses Sakana AI's mature
@@ -596,7 +646,7 @@
   <section>
     <div class="container">
       <div class="section-label">Engineering</div>
-      <h2>Porting Gemma-2-2B &rarr; Ministral-3-3B</h2>
+      <h2>Porting Gemma-2-2B &rarr; Ministral-3-3B-Instruct-2512</h2>
       <p>Adapting the original Sakana AI codebase to Mistral's architecture required solving several non-trivial challenges.</p>
       <div class="two-col" style="margin-top:28px;">
         <div class="card">
@@ -630,7 +680,7 @@
         <a href="https://github.com/Neopolita/doc-to-lora" class="repo-card" target="_blank">
           <div class="repo-type">GitHub Repository</div>
           <h4>Neopolita/doc-to-lora</h4>
-          <p>Hypernetwork training code. Ports Sakana AI's Doc-to-LoRA to Ministral-3-3B with full training pipeline and configs.</p>
+          <p>Hypernetwork training code. Ports Sakana AI's Doc-to-LoRA to Ministral-3-3B-Instruct-2512 with full training pipeline and configs.</p>
         </a>
         <a href="https://github.com/Neopolita/thoth" class="repo-card" target="_blank">
           <div class="repo-type">GitHub Repository</div>
@@ -640,9 +690,9 @@
         <a href="https://huggingface.co/neopolita/doc-to-lora-ministral-3b-2512" class="repo-card" target="_blank">
           <div class="repo-type">Hugging Face Model</div>
           <h4>doc-to-lora-ministral-3b-2512</h4>
-          <p>Trained ~309M parameter Perceiver hypernetwork for Ministral-3-3B. Hackathon research contribution, separate from the Sakana AI hypernetwork used in Thoth.</p>
+          <p>Trained ~309M parameter Perceiver hypernetwork for Ministral-3-3B-Instruct-2512. Hackathon research contribution, separate from the Sakana AI hypernetwork used in Thoth.</p>
         </a>
-        <a href="https://wandb.ai/neopolita/doc-to-lora/reports/Doc-to-LoRA-Ministral-3-3B-Hypernetwork--VmlldzoxNjA3MTU0MQ" class="repo-card" target="_blank">
+        <a href="https://wandb.ai/neopolita/doc-to-lora/reports/Doc-to-LoRA-Ministral-3-3B-Instruct-2512-Hypernetwork--VmlldzoxNjA3MTU0MQ" class="repo-card" target="_blank">
           <div class="repo-type">W&amp;B Report</div>
           <h4>Training Report</h4>
           <p>Full training metrics, loss curves, and hyperparameter details for the 4,000-step training run.</p>
@@ -654,7 +704,7 @@
         <div class="tech-pills">
           <span class="pill">Mistral Large</span>
           <span class="pill">Mistral-7B</span>
-          <span class="pill">Ministral-3-3B</span>
+          <span class="pill">Ministral-3-3B-Instruct-2512</span>
           <span class="pill">DSPy</span>
           <span class="pill">MLX-LM</span>
           <span class="pill">vLLM</span>
